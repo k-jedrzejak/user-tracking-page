@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Tracking Page</title>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>User Tracking Page</h1>
+
+  <% for (let i = 1; i <= 20; i++) { %>
+    <p>Paragraph <%= i %>: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula urna ac purus tristique, eu cursus ex lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse potenti. Sed sit amet volutpat eros. Aliquam erat volutpat. Integer nec turpis nec lacus efficitur bibendum in nec arcu. Phasellus ut sapien ut est feugiat viverra. Integer vehicula sapien ut lacus ultrices feugiat. Donec feugiat consequat tortor, a volutpat est ultricies ut. Nullam ullamcorper nulla ac mi ultrices, nec facilisis odio efficitur. Sed eu eros a justo facilisis malesuada. Cras non suscipit sapien. Fusce eget nunc a magna aliquam laoreet. Curabitur gravida nec leo et fermentum. Phasellus vestibulum tincidunt nulla ac tincidunt.</p>
+    <% if (i === 10) { %>
+      <div class="avatar-container">
+        <img src="" alt="User Avatar" id="avatar">
+      </div>
+    <% } %>
+  <% } %>
+
+  <script>
+  </script>
+</body>
+</html>
