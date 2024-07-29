@@ -1,9 +1,9 @@
 
-import { Schema, model } from 'mongoose';
+const mongoose = require('mongoose');
 
-const accessLogSchema = new Schema({
+const accessLogSchema = new mongoose.Schema({
   userId: { type: String, ref: 'User' },
   scrolledToImage: { type: Boolean, default: false }
 });
 
-export default model('AccessLog', accessLogSchema);
+module.exports = mongoose.model('AccessLog', accessLogSchema);

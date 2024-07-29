@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 async function fetchUserData() {
   try {
@@ -11,4 +11,4 @@ async function fetchUserData() {
   }
 }
 
-export default fetchUserData;
+module.exports = fetchUserData;

@@ -1,22 +1,19 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import path from 'path';
-import { connect } from 'mongoose';
-import { fileURLToPath } from 'url';
-import User from './models/user.js';
-import AccessLog from './models/accessLog.js';
-import session from 'express-session';
-import fetchUserData from './utils/fetchUserData.js';
-import MongoStore from 'connect-mongo';
+const dotenv = require('dotenv');
+const express = require('express');
+const path = require('path');
+const { connect } = require('mongoose');
+const User = require('./models/user');
+const AccessLog = require('./models/accessLog');
+const session = require('express-session');
+const fetchUserData = require('./utils/fetchUserData');
+const MongoStore = require('connect-mongo');
 
 dotenv.config();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 console.log(process.env.MONGODB_URI);
 
-const app = express()
-const PORT = process.env.PORT || 3000
+const app = express();
+const PORT = process.env.PORT || 3000;
 const URI = process.env.MONGODB_URI;
 
 app.use(express.json());
@@ -36,9 +33,9 @@ app.use(async (req, res, next) => {
       const userData = await fetchUserData();
       if (userData) {
         const user = await User.create(userData);
-        req.session.userId = user._id; 
+        req.session.userId = user._id;
         const newAccessLog = new AccessLog({ userId: user._id });
-        await newAccessLog.save(); 
+        await newAccessLog.save();
         console.log('User created and logged in session:', user);
       } else {
         console.log('Failed to fetch user data.');
@@ -56,7 +53,6 @@ app.get("/api/users", async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
     if (user) {
-      console.log(user)
       res.status(200).json(user);
     } else {
       res.status(404).json({ message: "User not found." });
@@ -64,14 +60,14 @@ app.get("/api/users", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-})
+});
 
 app.post("/api/scroll-event", async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
     return res.status(400).json({ message: 'UserId is required' });
   }
-  
+
   try {
     await AccessLog.updateOne({ userId }, { $set: { scrolledToImage: true } });
     res.sendStatus(200);
@@ -106,14 +102,14 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
-// connect to MongoDB and run the server
+// Connect to MongoDB and run the server
 connect(URI)
-.then(() => {
-  console.log("MongoDB connection successful.", URI);
-app.listen(PORT, () => {
-    console.log('Server is running on port 3000');
+  .then(() => {
+    console.log("MongoDB connection successful.", URI);
+    app.listen(PORT, () => {
+      console.log('Server is running on port', PORT);
+    });
+  })
+  .catch(err => {
+    console.error('Failed to connect to MongoDB', err);
   });
-})
-.catch(err => {
-  console.error('Failed to connect to MongoDB', err);
-});
