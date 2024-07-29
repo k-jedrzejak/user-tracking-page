@@ -13,12 +13,11 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+console.log(process.env.MONGODB_URI);
+
 const app = express()
 const PORT = process.env.PORT || 3000
 const URI = process.env.MONGODB_URI;
-
-app.set("view engine", "ejs");
-app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.json());
 
@@ -53,11 +52,6 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.get("/", async (req, res) => {
-  res.render("index");
-});
-
-
 app.get("/api/users", async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
@@ -87,7 +81,6 @@ app.post("/api/scroll-event", async (req, res) => {
   }
 });
 
-
 app.get("/report", async (req, res) => {
   try {
     const totalUsers = await AccessLog.countDocuments();
@@ -98,14 +91,20 @@ app.get("/report", async (req, res) => {
       scrollPercentage = (scrolledUsers / totalUsers) * 100;
     }
 
-    res.render("report", { totalUsers, scrollPercentage });
+    res.json({ totalUsers, scrollPercentage });
   } catch (error) {
     console.error('Error generating report:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 
+// Serve Vue.js static files
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
+// Catch-all route to serve the Vue.js app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+});
 
 // connect to MongoDB and run the server
 connect(URI)
@@ -118,5 +117,3 @@ app.listen(PORT, () => {
 .catch(err => {
   console.error('Failed to connect to MongoDB', err);
 });
-
-
