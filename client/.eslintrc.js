@@ -1,9 +1,8 @@
 // /client/.eslintrc.js
-export default  {
+module.exports = {
   env: {
     browser: true,
-    es2021: true,
-    node: true
+    es2021: true
   },
   extends: [
     'eslint:recommended',
@@ -12,7 +11,5 @@ export default  {
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module'
-  },
-  rules: {
   }
 };
