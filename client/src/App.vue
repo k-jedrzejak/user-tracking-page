@@ -1,11 +1,10 @@
 <template>
-  <div>Hello</div>
+  <router-view />
 </template>
 
 <script>
 export default {
   name: "App",
-  components: {},
 };
 </script>
 

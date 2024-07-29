@@ -34,8 +34,6 @@ app.use(async (req, res, next) => {
       if (userData) {
         const user = await User.create(userData);
         req.session.userId = user._id;
-        const newAccessLog = new AccessLog({ userId: user._id });
-        await newAccessLog.save();
         console.log('User created and logged in session:', user);
       } else {
         console.log('Failed to fetch user data.');
@@ -48,6 +46,7 @@ app.use(async (req, res, next) => {
   }
   next();
 });
+
 
 app.get("/api/users", async (req, res) => {
   try {
@@ -63,23 +62,35 @@ app.get("/api/users", async (req, res) => {
 });
 
 app.post("/api/scroll-event", async (req, res) => {
-  const { userId } = req.body;
-  if (!userId) {
-    return res.status(400).json({ message: 'UserId is required' });
+  const { userId, firstName, lastName } = req.body;
+  if (!userId || !firstName || !lastName) {
+    return res.status(400).json({ message: 'UserId, firstName, and lastName are required' });
   }
 
   try {
-    await AccessLog.updateOne({ userId }, { $set: { scrolledToImage: true } });
+    let accessLog = await AccessLog.findOne({ userId });
+
+    if (!accessLog) {
+      const newAccessLog = new AccessLog({
+        userId,
+        scrolledToImage: true,
+        firstName,
+        lastName
+      });
+      await newAccessLog.save();
+    }
+
     res.sendStatus(200);
   } catch (error) {
-    console.error('Error updating access log:', error);
+    console.error('Error handling scroll event:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-app.get("/report", async (req, res) => {
+
+app.get("/api/report", async (req, res) => {
   try {
-    const totalUsers = await AccessLog.countDocuments();
+    const totalUsers = await User.countDocuments();
     const scrolledUsers = await AccessLog.countDocuments({ scrolledToImage: true });
 
     let scrollPercentage = 0;
