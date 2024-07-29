@@ -59,7 +59,6 @@ app.get("/", async (req, res) => {
 
 
 app.get("/api/users", async (req, res) => {
-  console.log(req)
   try {
     const user = await User.findById(req.session.userId);
     if (user) {
@@ -72,6 +71,40 @@ app.get("/api/users", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 })
+
+app.post("/api/scroll-event", async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res.status(400).json({ message: 'UserId is required' });
+  }
+  
+  try {
+    await AccessLog.updateOne({ userId }, { $set: { scrolledToImage: true } });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error updating access log:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+app.get("/report", async (req, res) => {
+  try {
+    const totalUsers = await AccessLog.countDocuments();
+    const scrolledUsers = await AccessLog.countDocuments({ scrolledToImage: true });
+
+    let scrollPercentage = 0;
+    if (totalUsers > 0) {
+      scrollPercentage = (scrolledUsers / totalUsers) * 100;
+    }
+
+    res.render("report", { totalUsers, scrollPercentage });
+  } catch (error) {
+    console.error('Error generating report:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 
 // connect to MongoDB and run the server
