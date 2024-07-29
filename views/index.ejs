@@ -3,23 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Tracking Page</title>
+  <title>Webpage with Paragraphs and Avatar</title>
   <style>
+    p { line-height: 1.5em; margin: 10px 0; }
+    .avatar-container { text-align: center; margin: 20px 0; }
   </style>
 </head>
 <body>
-  <h1>User Tracking Page</h1>
-
+  <h1>Webpage with 20 Paragraphs</h1>
+  <button onclick="window.location.href='/report'">View Report</button>
+  <div id="user-info">
+    <p id="user-first-name">First Name: </p>
+    <p id="user-last-name">Last Name: </p>
+    <p id="user-email">Email: </p>
+  </div>
   <% for (let i = 1; i <= 20; i++) { %>
     <p>Paragraph <%= i %>: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vehicula urna ac purus tristique, eu cursus ex lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse potenti. Sed sit amet volutpat eros. Aliquam erat volutpat. Integer nec turpis nec lacus efficitur bibendum in nec arcu. Phasellus ut sapien ut est feugiat viverra. Integer vehicula sapien ut lacus ultrices feugiat. Donec feugiat consequat tortor, a volutpat est ultricies ut. Nullam ullamcorper nulla ac mi ultrices, nec facilisis odio efficitur. Sed eu eros a justo facilisis malesuada. Cras non suscipit sapien. Fusce eget nunc a magna aliquam laoreet. Curabitur gravida nec leo et fermentum. Phasellus vestibulum tincidunt nulla ac tincidunt.</p>
     <% if (i === 10) { %>
       <div class="avatar-container">
-        <img src="" alt="User Avatar" id="avatar">
+        <img src="" alt="User Avatar" id="avatar" style="width: 150px; height: 150px; border-radius: 50%;">
       </div>
     <% } %>
   <% } %>
 
   <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const user = await response.json();
+        
+        document.getElementById('user-first-name').textContent = `First Name: ${user.first_name}`;
+        document.getElementById('user-last-name').textContent = `Last Name: ${user.last_name}`;
+        document.getElementById('user-email').textContent = `Email: ${user.email}`;
+        document.getElementById('avatar').src = user.avatar;
+
+        const userId = user._id;
+
+        const avatar = document.getElementById('avatar');
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              fetch('/api/scroll-event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, event: 'scrolled to avatar' })
+              });
+            }
+          });
+        });
+
+        observer.observe(avatar);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    });
   </script>
 </body>
 </html>

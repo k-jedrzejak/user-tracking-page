@@ -33,26 +33,46 @@ app.use(
 
 app.use(async (req, res, next) => {
   if (!req.session.userId) {
-    const userData = await fetchUserData();
-    if (userData) {
-      const newUser = new User(userData);
-      await newUser.save(); 
-      req.session.userId = newUser._id; 
-      const newAccessLog = new AccessLog({ userId: newUser._id });
-      await newAccessLog.save(); 
+    try {
+      const userData = await fetchUserData();
+      if (userData) {
+        const user = await User.create(userData);
+        req.session.userId = user._id; 
+        const newAccessLog = new AccessLog({ userId: user._id });
+        await newAccessLog.save(); 
+        console.log('User created and logged in session:', user);
+      } else {
+        console.log('Failed to fetch user data.');
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
     }
+  } else {
+    console.log('User already in session:', req.session.userId);
   }
-  next(); 
+  next();
 });
-
-
-
-
 
 app.get("/", async (req, res) => {
-  const user = await User.findById(req.session.userId);
-  res.render("index", { user });
+  res.render("index");
 });
+
+
+app.get("/api/users", async (req, res) => {
+  console.log(req)
+  try {
+    const user = await User.findById(req.session.userId);
+    if (user) {
+      console.log(user)
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: "User not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+})
+
 
 // connect to MongoDB and run the server
 connect(URI)
