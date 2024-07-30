@@ -7,15 +7,6 @@ const userSchema = new mongoose.Schema({
   username: String,
   email: String,
   avatar: String,
-  phone_number: String,
-  address: {
-    city: String,
-    street_name: String,
-    street_address: String,
-    zip_code: String,
-    state: String,
-    country: String,
-  },
 });
 
 module.exports = mongoose.model('User', userSchema);
