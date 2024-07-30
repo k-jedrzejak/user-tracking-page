@@ -11,18 +11,12 @@
         <template v-for="i in totalParagraphs" :key="i">
           <WebParagraph :index="i" class="mb-4" />
           <div v-if="i === avatarIndex" class="avatar-container text-center">
-            <Suspense>
-              <template #default>
-                <UserAvatarAsync
-                  :user="user"
-                  :onAvatarVisible="logAvatarScroll"
-                />
-              </template>
-              <template #fallback>
-                <div>Loading avatar...</div>
-              </template>
-            </Suspense>
-            <UserAvatar :user="user" :onAvatarVisible="logAvatarScroll" />
+            <div v-if="loading">Loading avatar...</div>
+            <UserAvatar
+              v-else
+              :user="user"
+              :onAvatarVisible="logAvatarScroll"
+            />
           </div>
         </template>
       </div>
@@ -31,38 +25,38 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from "vue";
 import WebParagraph from "../components/WebParagraph.vue";
 import ActionButton from "../components/ActionButton.vue";
 import { fetchUser, logAvatarScroll } from "../utils/userUtils";
-import { totalParagraphs, avatarIndex } from "../config/config"; // Import variables from config file
-
-// Asynchronously import UserAvatar component
-const UserAvatarAsync = defineAsyncComponent(() =>
-  import("../components/UserAvatar.vue")
-);
+import { totalParagraphs, avatarIndex } from "../config/config";
+import UserAvatar from "../components/UserAvatar.vue";
 
 export default {
   components: {
-    UserAvatarAsync,
     WebParagraph,
     ActionButton,
+    UserAvatar,
   },
   data() {
     return {
-      user: this.loadUserFromSession(),
+      user: {},
+      loading: true,
       totalParagraphs,
       avatarIndex,
     };
   },
+  async created() {
+    await this.fetchUserData();
+  },
   methods: {
-    loadUserFromSession() {
-      const cachedUser = sessionStorage.getItem("user");
-      return cachedUser ? JSON.parse(cachedUser) : {};
-    },
     async fetchUserData() {
-      if (Object.keys(this.user).length === 0) {
+      this.loading = true;
+      try {
         this.user = await fetchUser();
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        this.loading = false;
       }
     },
     viewReport() {
@@ -71,9 +65,6 @@ export default {
     logAvatarScroll(entries) {
       logAvatarScroll(entries, this.user);
     },
-  },
-  async created() {
-    await this.fetchUserData();
   },
 };
 </script>

@@ -1,4 +1,3 @@
-<!-- views/ReportPage.vue -->
 <template>
   <div class="container">
     <div class="row">
@@ -24,11 +23,7 @@
 <script>
 import ActionButton from "../components/ActionButton";
 import { defineAsyncComponent } from "vue";
-import {
-  fetchReportData,
-  // cacheReportData,
-  // getCachedReportData,
-} from "../utils/reportUtils";
+import { fetchReportData } from "../utils/reportUtils";
 
 const ReportTable = defineAsyncComponent(() =>
   import("../components/ReportTable")
@@ -44,6 +39,9 @@ export default {
       isDataLoaded: false,
     };
   },
+  created() {
+    this.loadReportData();
+  },
   methods: {
     async loadReportData() {
       try {
@@ -51,7 +49,6 @@ export default {
         this.totalUsers = data.totalUsers;
         this.scrollPercentage = data.scrollPercentage;
         this.isDataLoaded = true;
-        // cacheReportData(data);
       } catch (error) {
         console.error("Error loading report data:", error);
       }
@@ -59,9 +56,6 @@ export default {
     goHome() {
       this.$router.push("/");
     },
-  },
-  created() {
-    this.loadReportData();
   },
 };
 </script>
