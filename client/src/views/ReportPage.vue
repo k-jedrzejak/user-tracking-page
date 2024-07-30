@@ -11,12 +11,21 @@
         <td>{{ scrollPercentage.toFixed(2) }}%</td>
       </tr>
     </table>
-    <button @click="goHome">Back to Home</button>
+    <ActionButton @clickBtn="goHome">Back to Home</ActionButton>
   </div>
 </template>
 
 <script>
+import ActionButton from "../components/ActionButton";
+import {
+  fetchReportData,
+  getCachedReportData,
+  cacheReportData,
+} from "../utils/reportUtils";
+
 export default {
+  name: "ReportPage",
+  components: { ActionButton },
   data() {
     return {
       totalUsers: 0,
@@ -24,17 +33,20 @@ export default {
     };
   },
   methods: {
-    async fetchReportData() {
+    async loadReportData() {
       try {
-        const response = await fetch("/api/report");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+        const cachedReport = getCachedReportData();
+        if (cachedReport) {
+          this.totalUsers = cachedReport.totalUsers;
+          this.scrollPercentage = cachedReport.scrollPercentage;
+        } else {
+          const data = await fetchReportData();
+          this.totalUsers = data.totalUsers;
+          this.scrollPercentage = data.scrollPercentage;
+          cacheReportData(data);
         }
-        const data = await response.json();
-        this.totalUsers = data.totalUsers;
-        this.scrollPercentage = data.scrollPercentage;
       } catch (error) {
-        console.error("Error fetching report data:", error);
+        console.error("Error loading report data:", error);
       }
     },
     goHome() {
@@ -42,24 +54,6 @@ export default {
     },
   },
   mounted() {
-    this.fetchReportData();
+    this.loadReportData();
   },
 };
-</script>
-
-<style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: center;
-}
-
-button {
-  margin-top: 20px;
-}
-</style>
