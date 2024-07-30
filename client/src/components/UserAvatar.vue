@@ -1,12 +1,12 @@
 <template>
   <div>
-    <img :src="user.avatar" alt="User Avatar" class="avatar" />
+    <img :src="user.avatar" alt="User Avatar" v-if="user.avatar" />
+    <div v-else>Avatar not available</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "UserAvatar",
   props: {
     user: {
       type: Object,
@@ -17,19 +17,19 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      hasLoggedScrollEvent: false,
+    };
+  },
   mounted() {
     const observer = new IntersectionObserver((entries) => {
-      this.onAvatarVisible(entries);
+      if (entries[0].isIntersecting && !this.hasLoggedScrollEvent) {
+        this.hasLoggedScrollEvent = true;
+        this.onAvatarVisible(entries);
+      }
     });
     observer.observe(this.$el);
   },
 };
 </script>
-
-<style>
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-}
-</style>

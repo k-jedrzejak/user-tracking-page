@@ -1,44 +1,69 @@
 <template>
-  <div id="home">
-    <h1>Webpage with 20 Paragraphs</h1>
-
-    <ActionButton @clickBtn="viewReport">View Report</ActionButton>
-    <div v-for="i in 20" :key="i">
-      <WebParagraph :index="i" />
-      <div v-if="i === 10" class="avatar-container">
-        <Suspense>
-          <template #default>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8 mx-auto d-flex justify-content-between my-4">
+        <h1>User Tracking Page</h1>
+        <ActionButton @clickBtn="viewReport">View Report</ActionButton>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-8 mx-auto border-start">
+        <template v-for="i in totalParagraphs" :key="i">
+          <WebParagraph :index="i" class="mb-4" />
+          <div v-if="i === avatarIndex" class="avatar-container text-center">
+            <Suspense>
+              <template #default>
+                <UserAvatarAsync
+                  :user="user"
+                  :onAvatarVisible="logAvatarScroll"
+                />
+              </template>
+              <template #fallback>
+                <div>Loading avatar...</div>
+              </template>
+            </Suspense>
             <UserAvatar :user="user" :onAvatarVisible="logAvatarScroll" />
-          </template>
-          <template #fallback>
-            <div>Loading avatar...</div>
-          </template>
-        </Suspense>
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import UserAvatar from "../components/UserAvatar.vue";
+import { defineAsyncComponent } from "vue";
 import WebParagraph from "../components/WebParagraph.vue";
 import ActionButton from "../components/ActionButton.vue";
 import { fetchUser, logAvatarScroll } from "../utils/userUtils";
+import { totalParagraphs, avatarIndex } from "../config/config"; // Import variables from config file
+
+// Asynchronously import UserAvatar component
+const UserAvatarAsync = defineAsyncComponent(() =>
+  import("../components/UserAvatar.vue")
+);
 
 export default {
   components: {
-    UserAvatar,
+    UserAvatarAsync,
     WebParagraph,
     ActionButton,
   },
   data() {
     return {
-      user: {},
+      user: this.loadUserFromSession(),
+      totalParagraphs,
+      avatarIndex,
     };
   },
   methods: {
-    async loadUser() {
-      this.user = await fetchUser();
+    loadUserFromSession() {
+      const cachedUser = sessionStorage.getItem("user");
+      return cachedUser ? JSON.parse(cachedUser) : {};
+    },
+    async fetchUserData() {
+      if (Object.keys(this.user).length === 0) {
+        this.user = await fetchUser();
+      }
     },
     viewReport() {
       this.$router.push("/report");
@@ -47,8 +72,8 @@ export default {
       logAvatarScroll(entries, this.user);
     },
   },
-  mounted() {
-    this.loadUser();
+  async created() {
+    await this.fetchUserData();
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <button @click="handleClick">
+  <button @click="handleClick" class="btn btn-primary">
     <slot>Default Text</slot>
   </button>
 </template>

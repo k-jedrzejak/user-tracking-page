@@ -1,50 +1,57 @@
+<!-- views/ReportPage.vue -->
 <template>
-  <div>
-    <h1>Access Report</h1>
-    <table>
-      <tr>
-        <th>Total Users</th>
-        <th>Scrolled to Image (%)</th>
-      </tr>
-      <tr>
-        <td>{{ totalUsers }}</td>
-        <td>{{ scrollPercentage.toFixed(2) }}%</td>
-      </tr>
-    </table>
-    <ActionButton @clickBtn="goHome">Back to Home</ActionButton>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8 mx-auto d-flex justify-content-between my-4">
+        <h1>Access Report</h1>
+        <ActionButton @clickBtn="goHome">Back to Home</ActionButton>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-8 mx-auto border-start">
+        <div v-if="isDataLoaded">
+          <ReportTable
+            :totalUsers="totalUsers"
+            :scrollPercentage="scrollPercentage"
+          />
+        </div>
+        <div v-else>Generate Report...</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import ActionButton from "../components/ActionButton";
+import { defineAsyncComponent } from "vue";
 import {
   fetchReportData,
-  getCachedReportData,
-  cacheReportData,
+  // cacheReportData,
+  // getCachedReportData,
 } from "../utils/reportUtils";
+
+const ReportTable = defineAsyncComponent(() =>
+  import("../components/ReportTable")
+);
 
 export default {
   name: "ReportPage",
-  components: { ActionButton },
+  components: { ActionButton, ReportTable },
   data() {
     return {
-      totalUsers: 0,
-      scrollPercentage: 0,
+      totalUsers: null,
+      scrollPercentage: null,
+      isDataLoaded: false,
     };
   },
   methods: {
     async loadReportData() {
       try {
-        const cachedReport = getCachedReportData();
-        if (cachedReport) {
-          this.totalUsers = cachedReport.totalUsers;
-          this.scrollPercentage = cachedReport.scrollPercentage;
-        } else {
-          const data = await fetchReportData();
-          this.totalUsers = data.totalUsers;
-          this.scrollPercentage = data.scrollPercentage;
-          cacheReportData(data);
-        }
+        const data = await fetchReportData();
+        this.totalUsers = data.totalUsers;
+        this.scrollPercentage = data.scrollPercentage;
+        this.isDataLoaded = true;
+        // cacheReportData(data);
       } catch (error) {
         console.error("Error loading report data:", error);
       }
@@ -53,7 +60,14 @@ export default {
       this.$router.push("/");
     },
   },
-  mounted() {
+  created() {
     this.loadReportData();
   },
 };
+</script>
+
+<style scoped>
+table {
+  width: 90%;
+}
+</style>

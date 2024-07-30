@@ -11,15 +11,3 @@ export async function fetchReportData() {
     throw error;
   }
 }
-
-export function getCachedReportData() {
-  const cachedReport = sessionStorage.getItem("reportData");
-  if (cachedReport) {
-    return JSON.parse(cachedReport);
-  }
-  return null;
-}
-
-export function cacheReportData(data) {
-  sessionStorage.setItem("reportData", JSON.stringify(data));
-}
