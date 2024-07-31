@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 dotenv.config();
 
-const DB_URL = process.env.MONGODB_URI || "mongodb://localhost:8080/test"
+const DB_URL = process.env.MONGODB_URI || "mongodb://mongo:27017/userTrackingDB"
 
 const connectDB = async () => {
   try {

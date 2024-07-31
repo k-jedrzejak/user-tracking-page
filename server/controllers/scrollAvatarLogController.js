@@ -2,6 +2,7 @@ const AccessLog = require('../models/accessLog');
 
 const handleScrollEvent = async (req, res) => {
   const { userId, firstName, lastName } = req.body;
+
   if (!userId || !firstName || !lastName) {
     return res.status(400).json({ message: 'UserId, firstName, and lastName are required' });
   }

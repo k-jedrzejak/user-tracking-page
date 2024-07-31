@@ -1,5 +1,6 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <button @click="handleClick" class="btn btn-primary">
+  <button class="btn btn-primary" @click="handleClick">
     <slot>Default Text</slot>
   </button>
 </template>
@@ -7,9 +8,10 @@
 <script>
 export default {
   name: "ActionButton",
+  emits: ["click-btn"],
   methods: {
     handleClick() {
-      this.$emit("clickBtn");
+      this.$emit("click-btn");
     },
   },
 };

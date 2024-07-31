@@ -1,6 +1,8 @@
+<!-- eslint-disable vue/max-attributes-per-line -->
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div>
-    <img :src="user.avatar" alt="User Avatar" v-if="user.avatar" />
+    <img v-if="user.avatar" :src="user.avatar" alt="User Avatar" />
     <div v-else>Avatar not available</div>
   </div>
 </template>

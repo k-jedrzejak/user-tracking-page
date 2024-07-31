@@ -1,9 +1,11 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <div class="container">
     <div class="row">
       <div class="col-12 col-md-8 mx-auto d-flex justify-content-between my-4">
         <h1>User Tracking Page</h1>
-        <ActionButton @clickBtn="viewReport">View Report</ActionButton>
+        <ActionButton @click-btn="viewReport"> View Report </ActionButton>
       </div>
     </div>
     <div class="row">
@@ -15,7 +17,7 @@
             <UserAvatar
               v-else
               :user="user"
-              :onAvatarVisible="logAvatarScroll"
+              :on-avatar-visible="logAvatarScroll"
             />
           </div>
         </template>

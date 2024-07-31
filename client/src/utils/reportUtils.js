@@ -1,6 +1,6 @@
 export async function fetchReportData() {
   try {
-    const response = await fetch("/api/report");
+    const response = await fetch(`/api/report`);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

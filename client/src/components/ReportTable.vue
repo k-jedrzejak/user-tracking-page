@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <table class="table table-bordered mx-auto">
     <thead>

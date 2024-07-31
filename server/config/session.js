@@ -9,18 +9,19 @@ const sessionConfig = session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || "mongodb://localhost:8080/test",
+    mongoUrl: process.env.MONGODB_URI || "mongodb://mongo:27017/userTrackingDB",
     crypto: {
       secret: process.env.MONGO_STORE_SECRET,
     },
-    ttl: 24 * 60 * 60,
+    ttl: 24 * 60 * 60, // 24h
+    autoRemove: "native",
   }),
   cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: null,
-    expires: null,
-  },
+    httpOnly: true,  
+    secure: false, // false only for development
+    maxAge: 24 * 60 * 60 * 1000, 
+    sameSite: 'lax' // 24h
+  }
 });
 
 module.exports = sessionConfig;

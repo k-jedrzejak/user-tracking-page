@@ -5,8 +5,14 @@ export async function fetchUser() {
     if (cachedUser) {
       user = JSON.parse(cachedUser);
     } else {
-      const response = await fetch("/api/users");
+      const response = await fetch(`/api/users`, {
+        method: 'GET',
+        credentials: 'include'
+      });
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Session expired');
+        }
         throw new Error("Network response was not ok");
       }
       const fetchedUser = await response.json();
@@ -15,14 +21,16 @@ export async function fetchUser() {
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
+    throw error;
   }
   return user;
 }
 
+
 export function logAvatarScroll(entries, user) {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      fetch("/api/scroll-avatar-event", {
+      fetch(`/api/scroll-avatar-event`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -30,7 +38,7 @@ export function logAvatarScroll(entries, user) {
           firstName: user.first_name,
           lastName: user.last_name,
           event: "scrolled to avatar",
-        }),
+        })
       }).catch((error) => {
         console.error("Error sending scroll event:", error);
       });
