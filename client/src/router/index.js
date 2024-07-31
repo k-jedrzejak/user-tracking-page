@@ -6,12 +6,14 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomePage
+    component: HomePage,
+    meta: { title: 'UTP - Home' }
   },
   {
     path: '/report',
     name: 'Report',
-    component: ReportPage
+    component: ReportPage,
+    meta: { title: 'UTP - Report' }
   }
 ];
 
