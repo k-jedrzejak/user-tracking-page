@@ -1,10 +1,6 @@
 export async function fetchUser() {
   let user = {};
   try {
-    const cachedUser = sessionStorage.getItem("user");
-    if (cachedUser) {
-      user = JSON.parse(cachedUser);
-    } else {
       const response = await fetch(`/api/users`, {
         method: 'GET',
         credentials: 'include'
@@ -17,8 +13,6 @@ export async function fetchUser() {
       }
       const fetchedUser = await response.json();
       user = fetchedUser;
-      sessionStorage.setItem("user", JSON.stringify(fetchedUser));
-    }
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw error;
