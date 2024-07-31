@@ -22,7 +22,7 @@ export async function fetchUser() {
 export function logAvatarScroll(entries, user) {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      fetch("/api/scroll-event", {
+      fetch("/api/scroll-avatar-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

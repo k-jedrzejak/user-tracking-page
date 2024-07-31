@@ -1,5 +1,5 @@
 const express = require('express');
-const { handleScrollEvent } = require('../controllers/logController');
+const { handleScrollEvent } = require('../../controllers/scrollAvatarLogController');
 const router = express.Router();
 
 router.post("/", handleScrollEvent);

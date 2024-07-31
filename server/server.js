@@ -3,9 +3,8 @@ const path = require('path');
 const { connectDB } = require('./config/db');
 const sessionConfig = require('./config/session');
 const sessionMiddleware = require('./middleware/sessionMiddleware');
-const userRoutes = require('./routes/userRoutes');
-const logRoutes = require('./routes/logRoutes');
-const reportRoutes = require('./routes/reportRoutes');
+const { userRoutes, scrollAvatarLogRoutes, reportRoutes } = require('./routes/index');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,7 +15,7 @@ app.use(sessionMiddleware);
 
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/scroll-event', logRoutes);
+app.use('/api/scroll-avatar-event', scrollAvatarLogRoutes);
 app.use('/api/report', reportRoutes);
 
 // Serve Vue.js static files
