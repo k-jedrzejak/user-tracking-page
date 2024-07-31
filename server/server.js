@@ -24,12 +24,12 @@ app.use('/api/scroll-avatar-event', scrollAvatarLogRoutes);
 app.use('/api/report', reportRoutes);
 
 //Use when run project without docker locally: Serve Vue.js static files
-app.use(express.static(path.join(__dirname, '../client/dist')));
+// app.use(express.static(path.join(__dirname, '../client/dist')));
 
 //Use when run project without docker locally: Catch-all route to serve the Vue.js app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+// });
 
 
 // Connect to MongoDB and run the server
