@@ -9,7 +9,7 @@ const sessionConfig = session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
+    mongoUrl: process.env.MONGODB_URI || "mongodb://localhost:8080/test",
     crypto: {
       secret: process.env.MONGO_STORE_SECRET,
     },
