@@ -10,23 +10,14 @@ git clone https://github.com/your-username/user-tracking-page.git
 cd user-tracking-page
 ```
 
-2. Build the Frontend:
-Before running the application, you need to build the frontend assets:
-```
-cd client
-npm install
-npm run build
-cd ..
-```
-
-3. Run the Application with Docker:
+2. Run the Application with Docker:
 ```
 docker-compose up --build
 ```
 - The frontend will be accessible at http://localhost:8000.
 - The backend API will be accessible at http://localhost:3000.
 
-4. Stopping the Containers:
+3. Stopping the Containers:
 To stop the running Docker containers:
 ```
 docker-compose down
