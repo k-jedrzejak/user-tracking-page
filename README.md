@@ -27,6 +27,9 @@ docker-compose down
 ## Local Development (Without Docker):
 If you want to run the application locally without Docker:
 
+Do not forget install mongo locally! eg: `brew install mongodb-community`
+
+
 ### Backend and Frontend in Production Mode
 - Both will run on localhost:3000.
 - Do not forget to uncomment the relevant lines in server.js.
