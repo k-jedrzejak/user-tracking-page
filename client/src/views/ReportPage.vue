@@ -1,17 +1,18 @@
+<!-- eslint-disable vue/singleline-html-element-content-newline -->
 <template>
   <div class="container">
     <div class="row">
       <div class="col-12 col-md-8 mx-auto d-flex justify-content-between my-4">
         <h1>Access Report</h1>
-        <ActionButton @clickBtn="goHome">Back to Home</ActionButton>
+        <ActionButton @click-btn="goHome">Back to Home</ActionButton>
       </div>
     </div>
     <div class="row">
       <div class="col-12 col-md-8 mx-auto border-start">
         <div v-if="isDataLoaded">
           <ReportTable
-            :totalUsers="totalUsers"
-            :scrollPercentage="scrollPercentage"
+            :total-users="totalUsers"
+            :scroll-percentage="scrollPercentage"
           />
         </div>
         <div v-else>Generate Report...</div>
@@ -23,7 +24,7 @@
 <script>
 import ActionButton from "../components/ActionButton";
 import { defineAsyncComponent } from "vue";
-import { fetchReportData } from "../utils/reportUtils";
+import { fetchReportData } from "../services/reportService";
 
 const ReportTable = defineAsyncComponent(() =>
   import("../components/ReportTable")

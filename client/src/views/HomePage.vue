@@ -17,7 +17,7 @@
             <UserAvatar
               v-else
               :user="user"
-              :on-avatar-visible="logAvatarScroll"
+              :on-avatar-visible="sendAvatarScrollEvent"
             />
           </div>
         </template>
@@ -29,9 +29,10 @@
 <script>
 import WebParagraph from "../components/WebParagraph.vue";
 import ActionButton from "../components/ActionButton.vue";
-import { fetchUser, logAvatarScroll } from "../utils/userUtils";
-import { totalParagraphs, avatarIndex } from "../config/config";
 import UserAvatar from "../components/UserAvatar.vue";
+import { fetchUser } from "../services/userService";
+import { sendAvatarScrollEvent } from "@/services/scrollService";
+import { totalParagraphs, avatarIndex } from "../config/config";
 
 export default {
   components: {
@@ -64,8 +65,8 @@ export default {
     viewReport() {
       this.$router.push("/report");
     },
-    logAvatarScroll(entries) {
-      logAvatarScroll(entries, this.user);
+    sendAvatarScrollEvent(entries) {
+      sendAvatarScrollEvent(entries, this.user);
     },
   },
 };
